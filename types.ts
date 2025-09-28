@@ -7,6 +7,12 @@ export interface NutritionInfo {
   fat: number; // in grams
 }
 
+export interface MenuItemDetails {
+  ingredients: string[];
+  cookingTime: string;
+  originStory: string;
+}
+
 export interface MenuItem {
   id: number;
   name: string;
@@ -15,6 +21,7 @@ export interface MenuItem {
   image: string;
   category: MenuCategory;
   nutrition: NutritionInfo;
+  details: MenuItemDetails;
 }
 
 export interface CartItem extends MenuItem {

@@ -14,6 +14,7 @@ const App: React.FC = () => {
   const [isCartVisible, setIsCartVisible] = useState(true);
   const [view, setView] = useState<View>('menu');
   const [placedOrder, setPlacedOrder] = useState<CartItem[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleAddToCart = useCallback((item: MenuItemType) => {
     setCartItems(prevItems => {
@@ -65,14 +66,22 @@ const App: React.FC = () => {
   }, []);
 
   const groupedMenu = useMemo(() => {
-    return MENU_ITEMS.reduce((acc, item) => {
+    const lowercasedTerm = searchTerm.toLowerCase().trim();
+    const itemsToDisplay = lowercasedTerm
+      ? MENU_ITEMS.filter(item =>
+          item.name.toLowerCase().includes(lowercasedTerm) ||
+          item.description.toLowerCase().includes(lowercasedTerm)
+        )
+      : MENU_ITEMS;
+
+    return itemsToDisplay.reduce((acc, item) => {
       if (!acc[item.category]) {
         acc[item.category] = [];
       }
       acc[item.category].push(item);
       return acc;
     }, {} as Record<string, MenuItemType[]>);
-  }, []);
+  }, [searchTerm]);
   
   const totalItems = useMemo(() => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
@@ -80,7 +89,13 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans">
-      <Header cartItemCount={totalItems} onCartClick={() => view === 'menu' && setIsCartVisible(!isCartVisible)} />
+      <Header 
+        cartItemCount={totalItems} 
+        onCartClick={() => view === 'menu' && setIsCartVisible(!isCartVisible)}
+        view={view}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+      />
       <main>
         {view === 'menu' ? (
           <div className="container mx-auto px-4 py-8">

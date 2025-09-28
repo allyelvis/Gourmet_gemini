@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { CartItem as CartItemType } from '../types';
 import CartItem from './CartItem';
 import ShoppingCartIcon from './icons/ShoppingCartIcon';
@@ -15,6 +15,13 @@ const Cart: React.FC<CartProps> = ({ items, onUpdateQuantity, onRemoveItem, onCl
   const subtotal = useMemo(() => {
     return items.reduce((total, item) => total + item.price * item.quantity, 0);
   }, [items]);
+  
+  const [isConfirmingClear, setIsConfirmingClear] = useState(false);
+
+  const handleConfirmClear = () => {
+      onClearCart();
+      setIsConfirmingClear(false);
+  }
 
   return (
     <div className="bg-gray-800 rounded-lg shadow-xl p-6 lg:bg-gray-800/50 lg:backdrop-blur-sm">
@@ -48,12 +55,34 @@ const Cart: React.FC<CartProps> = ({ items, onUpdateQuantity, onRemoveItem, onCl
             >
               Checkout
             </button>
-            <button 
-              onClick={onClearCart}
-              className="w-full text-center text-gray-400 text-sm mt-3 hover:text-red-500 transition-colors"
-            >
-              Clear Cart
-            </button>
+            
+            {isConfirmingClear ? (
+                <div className="text-center mt-3 bg-gray-700/50 p-3 rounded-md">
+                    <p className="text-gray-300 text-sm mb-3">Are you sure?</p>
+                    <div className="flex gap-3">
+                        <button 
+                            onClick={() => setIsConfirmingClear(false)}
+                            className="w-full text-center bg-gray-600 text-white font-semibold text-sm py-2 rounded-md hover:bg-gray-500 transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            onClick={handleConfirmClear}
+                            className="w-full text-center bg-red-600 text-white font-semibold text-sm py-2 rounded-md hover:bg-red-500 transition-colors"
+                        >
+                            Clear
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <button 
+                    onClick={() => setIsConfirmingClear(true)}
+                    className="w-full text-center text-gray-400 text-sm mt-3 hover:text-red-500 transition-colors"
+                >
+                    Clear Cart
+                </button>
+            )}
+
           </div>
         </>
       )}
