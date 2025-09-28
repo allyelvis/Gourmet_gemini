@@ -1,0 +1,5 @@
+{
+  "name": "Gourmet Gemini",
+  "description": "A modern e-commerce restaurant app where users can browse a menu, add items to a cart, and get personalized meal suggestions from a Gemini-powered AI chef.",
+  "requestFramePermissions": []
+}
